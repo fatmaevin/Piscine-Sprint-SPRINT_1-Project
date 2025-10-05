@@ -5,8 +5,35 @@
 // You can't open the index.html file using a file:// URL.
 
 import { getUserIds } from "./common.mjs";
-
-window.onload = function () {
+window.addEventListener("DOMContentLoaded", () => {
+  const userSelect = document.getElementById("userSelect");
   const users = getUserIds();
-  document.querySelector("body").innerText = `There are ${users.length} users`;
-};
+  users.forEach((userId) => {
+    const option = document.createElement("option");
+    option.value = userId;
+    option.textContent = `User ${userId}`;
+    userSelect.appendChild(option);
+  });
+
+  userSelect.addEventListener("change", (event) => {
+    const selectedUser = event.target.value;
+    const agendaContainer = document.getElementById("agendaContainer");
+
+    agendaContainer.innerHTML = "";
+    if (!selectedUser) {
+      agendaContainer.textContent = "No user selected";
+      return;
+    }
+    const userAgenda = getData(selectedUser);
+    if (!userAgenda || userAgenda.length === 0) {
+      agendaContainer.textContent = "No topics";
+    } else {
+      userAgenda.sort((a, b) => new Date(a.date) - new Date(b.date));
+      userAgenda.forEach((i) => {
+        const p = document.createElement("p");
+        p.textContent = `Topic: ${i.topic}, Date:${i.date}`;
+        agendaContainer.appendChild(p);
+      });
+    }
+  });
+});
