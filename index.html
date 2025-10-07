@@ -11,7 +11,7 @@
   </header>
   <main>
     <section> 
-      <label>Choose a user:</label>
+      <label for="userSelect">Choose a user:</label>
       <select id="userSelect">
         <option value="">Select user </option>  
       </select>
@@ -20,7 +20,7 @@
       <h2>  Add new topic</h2>
       <form id="topicForm">
         <div>
-          <label>Topic name:</label>
+          <label for="topicName">Topic name:</label>
           <input type="text"
           id="topicName"
           name="topicName"
@@ -29,9 +29,10 @@
           </input>
         </div>
         <div>
-          <label >Start date:</label>
+          <label for="startDate">Start date:</label>
           <input type="date" id="startDate" name="startDate" required/>
         </div>
+        <br><br>
         <button type="submit">Add Topic</button>
 
       </form> 
