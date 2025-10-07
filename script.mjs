@@ -35,7 +35,6 @@ window.addEventListener("DOMContentLoaded", () => {
       alert("Please select user from the list");
       return;
     }
-
     if (!topic) {
       alert("Please enter topic");
       return;
