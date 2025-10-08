@@ -14,13 +14,37 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const users = getUserIds();
 
-  // set default date and disbale past dated
-
-  if (startDateInput) {
-    const today = new Date().toISOString().split("T")[0];
-    startDateInput.value = today;
-    startDateInput.min = today;
+  function defaultDate() {
+    if (startDateInput) {
+      const today = new Date().toISOString().split("T")[0];
+      startDateInput.value = today;
+      startDateInput.min = today;
+    }
   }
+  function revisionDates(initialDate) {
+    const today = new Date();
+    const date = new Date(initialDate);
+    const revisions = [
+      { period: "1 week", days: 7 },
+      { period: "1 month", months: 1 },
+      { period: "3 months", months: 3 },
+      { period: "6 months", months: 6 },
+      { period: "1 year", years: 1 },
+    ];
+    return revisions
+      .map((el) => {
+        const nextDate = new Date(date);
+        if (el.days) nextDate.setDate(nextDate.getDate() + el.days);
+        if (el.months) nextDate.setMonth(nextDate.getMonth() + el.months);
+        if (el.years) nextDate.setFullYear(nextDate.getFullYear() + el.years);
+        return {
+          period: el.period,
+          date: nextDate.toISOString().split("T")[0],
+        };
+      })
+      .filter((el) => new Date(el.date) >= today);
+  }
+  defaultDate();
 
   users.forEach((userId) => {
     const option = document.createElement("option");
@@ -32,13 +56,7 @@ window.addEventListener("DOMContentLoaded", () => {
   userSelect.addEventListener("change", (event) => {
     const selectedUser = event.target.value;
 
-    // set default date and disbale past dated on user change
-
-    if (startDateInput) {
-      const today = new Date().toISOString().split("T")[0];
-      startDateInput.value = today;
-      startDateInput.min = today;
-    }
+    defaultDate();
 
     renderAgenda(selectedUser);
   });
@@ -67,13 +85,7 @@ window.addEventListener("DOMContentLoaded", () => {
     addData(userId, [{ topic, date }]);
     topicForm.reset();
 
-    // set default date and disbale past dated after from reset
-
-    if (startDateInput) {
-      const today = new Date().toISOString().split("T")[0];
-      startDateInput.value = today;
-      startDateInput.min = today;
-    }
+    defaultDate();
 
     renderAgenda(userId);
   });
@@ -95,6 +107,13 @@ window.addEventListener("DOMContentLoaded", () => {
         const p = document.createElement("p");
         p.textContent = `Topic: ${i.topic} - Date: ${i.date}`;
         agendaContainer.appendChild(p);
+
+        const revisions = revisionDates(i.date);
+        revisions.forEach((el) => {
+          const revP = document.createElement("p");
+          revP.textContent = `Revision ${i.topic} ${el.date}`;
+          agendaContainer.appendChild(revP);
+        });
       });
     }
   }
