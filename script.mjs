@@ -10,7 +10,17 @@ import { getData, addData } from "./storage.mjs";
 window.addEventListener("DOMContentLoaded", () => {
   const userSelect = document.getElementById("userSelect");
   const topicForm = document.getElementById("topicForm");
+  const startDateInput = document.getElementById("startDate");
+
   const users = getUserIds();
+
+  // set default date and disbale past dated
+
+  if (startDateInput) {
+    const today = new Date().toISOString().split("T")[0];
+    startDateInput.value = today;
+    startDateInput.min = today;
+  }
 
   users.forEach((userId) => {
     const option = document.createElement("option");
@@ -21,6 +31,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
   userSelect.addEventListener("change", (event) => {
     const selectedUser = event.target.value;
+
+    // set default date and disbale past dated on user change
+
+    if (startDateInput) {
+      const today = new Date().toISOString().split("T")[0];
+      startDateInput.value = today;
+      startDateInput.min = today;
+    }
+
     renderAgenda(selectedUser);
   });
 
@@ -47,6 +66,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
     addData(userId, [{ topic, date }]);
     topicForm.reset();
+
+    // set default date and disbale past dated after from reset
+
+    if (startDateInput) {
+      const today = new Date().toISOString().split("T")[0];
+      startDateInput.value = today;
+      startDateInput.min = today;
+    }
+
     renderAgenda(userId);
   });
 
@@ -65,7 +93,7 @@ window.addEventListener("DOMContentLoaded", () => {
       userAgenda.sort((a, b) => new Date(a.date) - new Date(b.date));
       userAgenda.forEach((i) => {
         const p = document.createElement("p");
-        p.textContent = `Topic: ${i.topic}, Date:${i.date}`;
+        p.textContent = `Topic: ${i.topic} - Date: ${i.date}`;
         agendaContainer.appendChild(p);
       });
     }
