@@ -5,12 +5,13 @@
 // You can't open the index.html file using a file:// URL.
 
 import { getUserIds } from "./common.mjs";
-import { getData, addData } from "./storage.mjs";
+import { getData, addData, clearData } from "./storage.mjs";
 
 window.addEventListener("DOMContentLoaded", () => {
   const userSelect = document.getElementById("userSelect");
   const topicForm = document.getElementById("topicForm");
   const startDateInput = document.getElementById("startDate");
+  const clearAgendaBtn = document.getElementById("clearAll-Agenda");
 
   const users = getUserIds();
 
@@ -90,6 +91,20 @@ window.addEventListener("DOMContentLoaded", () => {
     renderAgenda(userId);
   });
 
+    // clear user agenda
+  clearAgendaBtn.addEventListener("click", () => {
+    const userId = userSelect.value;
+    if(!userId) {
+      alert("Please select user first")
+      return
+    }
+
+    if(confirm("Are you sure you want to delete all agendas from the list.")) {
+      clearData(userId);
+      renderAgenda(userId)
+    }
+  })
+
   function renderAgenda(selectedUser) {
     const agendaContainer = document.getElementById("agendaContainer");
 
@@ -111,7 +126,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const revisions = revisionDates(i.date);
         revisions.forEach((el) => {
           const revP = document.createElement("p");
-          revP.textContent = `Revision ${i.topic} ${el.date}`;
+          revP.textContent = `Revision: ${i.topic} - ${el.date}`;
           agendaContainer.appendChild(revP);
         });
       });
